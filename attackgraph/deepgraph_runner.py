@@ -93,7 +93,7 @@ def initialize(load_env=None, env_name=None):
     return game
 
 # def EGTA(env, game, start_hado = 2, retrain=False, epoch = 1, game_path = os.getcwd() + '/game_data/game.pkl', MPI_flag = False):
-def EGTA(env, game, start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() + '/game_data/game.pkl'):
+def EGTA(env, game, start_hado=2, retrain=False, transfer=False, epoch=1, game_path=os.getcwd() + '/game_data/game.pkl'):
 
     if retrain:
         print("=======================================================")
@@ -108,7 +108,7 @@ def EGTA(env, game, start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() 
 
     proc = psutil.Process(os.getpid())
 
-    count = 8
+    count = 2
     while count != 0:
     # while True:
         mem0 = proc.memory_info().rss
@@ -127,12 +127,20 @@ def EGTA(env, game, start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() 
         if retrain and epoch > start_hado:
             retrain_start = True
 
+        if epoch == 2 and transfer:
+            transfer_flag = False
+        elif transfer:
+            transfer_flag = True
+        else:
+            transfer_flag = False
+
+
         print("Begin training attacker......")
-        training.training_att(game, mix_str_def, epoch, retrain=retrain_start)
+        training.training_att(game, mix_str_def, epoch, retrain=retrain_start, transfer=transfer_flag)
         print("Attacker training done......")
 
         print("Begin training defender......")
-        training.training_def(game, mix_str_att, epoch, retrain=retrain_start)
+        training.training_def(game, mix_str_att, epoch, retrain=retrain_start, transfer=transfer_flag)
         print("Defender training done......")
 
         mem1 = proc.memory_info().rss
@@ -210,7 +218,7 @@ def EGTA(env, game, start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() 
     print("END: " + str(epoch))
     os._exit(os.EX_OK)
 
-def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, game_path = os.getcwd() + '/game_data/game.pkl'):
+def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, game_path = os.getcwd() + '/game_data/game.pkl'):
 
     if retrain:
         print("=======================================================")
@@ -246,11 +254,11 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, game_path = os.ge
             retrain_start = True
 
         print("Begin training attacker......")
-        training.training_att(game, mix_str_def, epoch, retrain=retrain_start)
+        training.training_att(game, mix_str_def, epoch, retrain=retrain_start, transfer=transfer)
         print("Attacker training done......")
 
         print("Begin training defender......")
-        training.training_def(game, mix_str_att, epoch, retrain=retrain_start)
+        training.training_def(game, mix_str_att, epoch, retrain=retrain_start, transfer=transfer)
         print("Defender training done......")
 
         if retrain and epoch > start_hado:
@@ -327,7 +335,7 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, game_path = os.ge
 if __name__ == '__main__':
     game = initialize(env_name='test_env')
     # EGTA(env, game, retrain=True)
-    EGTA(game.env, game, retrain=False)
+    EGTA(game.env, game, retrain=False, transfer=True)
     # EGTA_restart(restart_epoch=4)
 
 

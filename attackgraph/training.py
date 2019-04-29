@@ -6,7 +6,7 @@ import os
 DIR_def = os.getcwd() + '/defender_strategies/'
 DIR_att = os.getcwd() + '/attacker_strategies/'
 
-def training_att(game, mix_str_def, epoch, retrain = False):
+def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
     if len(mix_str_def) != len(game.def_str):
         raise ValueError("The length of mix_str_def and def_str does not match while training")
 
@@ -32,7 +32,7 @@ def training_att(game, mix_str_def, epoch, retrain = False):
     else:
         load_path = None
 
-    learner = Learner()
+    learner = Learner(transfer=transfer)
     with learner.graph.as_default():
         with learner.sess.as_default():
             act_att = learner.learn_multi_nets(
@@ -59,7 +59,7 @@ def training_att(game, mix_str_def, epoch, retrain = False):
 
 
 
-def training_def(game, mix_str_att, epoch, retrain = False):
+def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
     if len(mix_str_att) != len(game.att_str):
         raise ValueError("The length of mix_str_att and att_str does not match while retraining")
 
@@ -85,7 +85,7 @@ def training_def(game, mix_str_att, epoch, retrain = False):
     else:
         load_path = None
 
-    learner = Learner()
+    learner = Learner(transfer=transfer)
     with learner.graph.as_default():
         with learner.sess.as_default():
             act_def = learner.learn_multi_nets(

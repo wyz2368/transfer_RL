@@ -7,7 +7,7 @@ import cloudpickle
 import numpy as np
 
 import baselines.common.tf_util as U
-from baselines.common.tf_util import load_variables, save_variables
+from baselines.common.tf_util import load_variables, save_variables, load_variables_transfer
 # from baselines import logger
 from baselines.common.schedules import LinearSchedule
 from baselines.common import set_global_seeds
@@ -712,11 +712,12 @@ def learn_multi_nets(env,
     return act
 
 class Learner(object):
-    def __init__(self, retrain = False, freq=100000):
+    def __init__(self, retrain = False, transfer = False, freq=100000):
         self.graph = tf.Graph()
         self.sess = tf.Session(graph=self.graph)
         self.retrain = retrain
         self.retrain_freq = freq
+        self.transfer = transfer
 
     def learn_multi_nets(self,
                          env,
@@ -862,7 +863,8 @@ class Learner(object):
                     gamma=gamma,
                     grad_norm_clipping=10,
                     param_noise=param_noise,
-                    scope=scope
+                    scope=scope,
+                    transfer=self.transfer
                 )
 
                 act_params = {
@@ -907,8 +909,13 @@ class Learner(object):
                 # if self.retrain and load_path is not None:
                 #     load_variables(load_path, sess=self.sess)
 
-                if load_path is not None:
+                # TODO: modification for transfer learning.
+                if load_path is not None and not self.transfer:
                     load_variables(load_path, sess=self.sess)
+                elif load_path is not None and self.transfer:
+                    load_variables_transfer(load_path, sess=self.sess)
+                    update_target()
+
 
                 if total_timesteps != 0:
                     if training_flag == 0:  # defender is training
