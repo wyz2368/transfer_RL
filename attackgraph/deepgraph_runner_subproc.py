@@ -104,7 +104,7 @@ def initialize(load_env=None, env_name=None):
     return game
 
 # def EGTA(env, game, start_hado = 2, retrain=False, epoch = 1, game_path = os.getcwd() + '/game_data/game.pkl', MPI_flag = False):
-def EGTA(start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() + '/game_data/game.pkl'):
+def EGTA(start_hado=2, retrain=False, transfer=False, epoch=1, game_path=os.getcwd() + '/game_data/game.pkl'):
 
     if retrain:
         print("=======================================================")
@@ -118,7 +118,7 @@ def EGTA(start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() + '/game_da
     sys.stdout.flush()
     arg_path = os.getcwd() + '/inner_egta_arg/'
 
-    hado_arg = (start_hado, retrain)
+    hado_arg = (start_hado, retrain, transfer)
     epoch_arg = epoch
 
     fp.save_pkl(hado_arg,path=arg_path+'hado_arg.pkl')
@@ -148,7 +148,7 @@ def EGTA(start_hado=2, retrain=False, epoch=1, game_path=os.getcwd() + '/game_da
     print("END: " + str(epoch))
     os._exit(os.EX_OK)
 
-def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, game_path = os.getcwd() + '/game_data/game.pkl'):
+def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, game_path = os.getcwd() + '/game_data/game.pkl'):
 
     if retrain:
         print("=======================================================")
@@ -164,7 +164,7 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, game_path = os.ge
     sys.stdout.flush()
     arg_path = os.getcwd() + '/inner_egta_arg/'
 
-    hado_arg = (start_hado, retrain)
+    hado_arg = (start_hado, retrain, transfer)
     epoch_arg = epoch
 
     fp.save_pkl(hado_arg, path=arg_path + 'hado_arg.pkl')

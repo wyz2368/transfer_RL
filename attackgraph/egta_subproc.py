@@ -28,7 +28,7 @@ def do_train_and_sim():
 def train_and_sim():
     arg_path = os.getcwd() + '/inner_egta_arg/'
 
-    start_hado, retrain = fp.load_pkl(arg_path+'hado_arg.pkl')
+    start_hado, retrain ,transfer = fp.load_pkl(arg_path+'hado_arg.pkl')
     epoch = fp.load_pkl(arg_path+'epoch_arg.pkl')
 
     game_path = os.getcwd() + '/game_data/game.pkl'
@@ -51,12 +51,19 @@ def train_and_sim():
     if retrain and epoch > start_hado:
         retrain_start = True
 
+    if epoch == 2 and transfer:
+        transfer_flag = False
+    elif transfer:
+        transfer_flag = True
+    else:
+        transfer_flag = False
+
     print("Begin training attacker......")
-    training.training_att(game, mix_str_def, epoch, retrain=retrain_start)
+    training.training_att(game, mix_str_def, epoch, retrain=retrain_start, transfer=transfer_flag)
     print("Attacker training done......")
 
     print("Begin training defender......")
-    training.training_def(game, mix_str_att, epoch, retrain=retrain_start)
+    training.training_def(game, mix_str_att, epoch, retrain=retrain_start, transfer=transfer_flag)
     print("Defender training done......")
 
     if retrain and epoch > start_hado:
@@ -95,7 +102,7 @@ def train_and_sim():
         _, d_BD = series_sim(env, game, nn_att, nn_def, game.num_episodes)
         print("Simulation done for d_BD.")
 
-    # #TODO: This may lead to early stop.
+    # #TODO: This may lead to early stop. BREAK CANNOT STOP THE RUNNING!!!
     # if a_BD - aPayoff < game.threshold and d_BD - dPayoff < game.threshold:
     #     print("*************************")
     #     print("aPayoff=", aPayoff, " ", "dPayoff=", dPayoff)

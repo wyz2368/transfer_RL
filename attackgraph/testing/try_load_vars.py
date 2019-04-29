@@ -23,8 +23,14 @@ import copy
 
 
 # load_path = os.getcwd() + '/attacker_strategies/att_str_epoch9.pkl'
-load_path = os.getcwd() + '/defender_strategies/def_str_epoch2.pkl'
+load_path1 = os.getcwd() + '/defender_strategies/def_str_epoch2.pkl'
+load_path2 = os.getcwd() + '/defender_strategies/def_str_epoch3.pkl'
 
-loaded_params = joblib.load(os.path.expanduser(load_path))
-for i in loaded_params.keys():
+loaded_params1 = joblib.load(os.path.expanduser(load_path1))
+loaded_params2 = joblib.load(os.path.expanduser(load_path2))
+for i in loaded_params1.keys():
     print(i)
+    print(loaded_params1[i])
+    print("______________________________")
+    print(loaded_params1[i]-loaded_params2[i])
+    print("*******************************************")

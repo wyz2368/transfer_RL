@@ -74,10 +74,10 @@ def change_scope(path, epoch, identity):
 
     if identity == 0:
         old_keys = 'def_str_retrain0'
-        new_keys = 'def_str_epoch' + str(epoch)
+        new_keys = 'def_str_epoch' + str(0)
     elif identity == 1:
         old_keys = 'att_str_retrain0'
-        new_keys = 'att_str_epoch' + str(epoch)
+        new_keys = 'att_str_epoch' + str(1)
     else:
         raise ValueError("Identity error!")
 

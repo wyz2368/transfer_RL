@@ -335,7 +335,7 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, g
 if __name__ == '__main__':
     game = initialize(env_name='test_env')
     # EGTA(env, game, retrain=True)
-    EGTA(game.env, game, retrain=False, transfer=True)
+    EGTA(game.env, game, retrain=False, transfer=False)
     # EGTA_restart(restart_epoch=4)
 
 
