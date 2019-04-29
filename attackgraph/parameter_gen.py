@@ -43,7 +43,7 @@ def nn_param1():
     param['checkpoint_freq'] = None
 
     #hado
-    param['retrain_timesteps'] = 4000
+    param['retrain_timesteps'] = 200
     param['hado_param'] = (4, 0.7, 0.286)
     param['retrain_freq'] = 1000
 
@@ -56,4 +56,4 @@ def nn_param1():
     print("Network parameters have been saved in a json file successfully.")
 
 
-nn_param()
+nn_param1()

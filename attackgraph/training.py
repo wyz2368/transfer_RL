@@ -2,7 +2,6 @@ from attackgraph import json_op as jp
 from baselines.common import models
 from baselines.deepq.deepq import learn_multi_nets, Learner
 import os
-# import copy
 
 DIR_def = os.getcwd() + '/defender_strategies/'
 DIR_att = os.getcwd() + '/attacker_strategies/'
@@ -10,8 +9,6 @@ DIR_att = os.getcwd() + '/attacker_strategies/'
 def training_att(game, mix_str_def, epoch, retrain = False):
     if len(mix_str_def) != len(game.def_str):
         raise ValueError("The length of mix_str_def and def_str does not match while training")
-
-    # env = copy.deepcopy(game.env)
 
     env = game.env
     env.reset_everything()
@@ -27,7 +24,13 @@ def training_att(game, mix_str_def, epoch, retrain = False):
     if retrain:
         scope = 'att_str_retrain' + str(0) + '.pkl' + '/'
     else:
-        scope = 'att_str_epoch' + str(epoch) + '.pkl' + '/'
+        scope = 'att_str_epoch' + str(1) + '.pkl' + '/'
+
+    #TODO: Transfer Learning
+    if epoch > 2:
+        load_path = DIR_att + "att_str_epoch" + str(epoch-1) + ".pkl"
+    else:
+        load_path = None
 
     learner = Learner()
     with learner.graph.as_default():
@@ -44,15 +47,15 @@ def training_att(game, mix_str_def, epoch, retrain = False):
                 gamma=param['gamma'],
                 prioritized_replay=param['prioritized_replay'],
                 checkpoint_freq=param['checkpoint_freq'],
-                scope = scope
+                scope = scope,
+                load_path=load_path
             )
             print("Saving attacker's model to pickle.")
             if retrain:
                 act_att.save(os.getcwd() + '/retrain_att/' + 'att_str_retrain' + str(0) + '.pkl', 'att_str_retrain' + str(0) + '.pkl' + '/')
             else:
-                act_att.save(DIR_att + "att_str_epoch" + str(epoch) + ".pkl", 'att_str_epoch' + str(epoch) + '.pkl' + '/')
+                act_att.save(DIR_att + "att_str_epoch" + str(epoch) + ".pkl", 'att_str_epoch' + str(1) + '.pkl' + '/')
     learner.sess.close()
-
 
 
 
@@ -60,7 +63,6 @@ def training_def(game, mix_str_att, epoch, retrain = False):
     if len(mix_str_att) != len(game.att_str):
         raise ValueError("The length of mix_str_att and att_str does not match while retraining")
 
-    # env = copy.deepcopy(game.env)
     env = game.env
     env.reset_everything()
 
@@ -75,7 +77,13 @@ def training_def(game, mix_str_att, epoch, retrain = False):
     if retrain:
         scope = 'def_str_retrain' + str(0) + '.pkl' + '/'
     else:
-        scope = 'def_str_epoch' + str(epoch) + '.pkl' + '/'
+        scope = 'def_str_epoch' + str(0) + '.pkl' + '/'
+
+    # TODO: Transfer Learning
+    if epoch > 2:
+        load_path = DIR_def + "def_str_epoch" + str(epoch-1) + ".pkl"
+    else:
+        load_path = None
 
     learner = Learner()
     with learner.graph.as_default():
@@ -92,16 +100,18 @@ def training_def(game, mix_str_att, epoch, retrain = False):
                 gamma=param['gamma'],
                 prioritized_replay=param['prioritized_replay'],
                 checkpoint_freq=param['checkpoint_freq'],
-                scope = scope
+                scope = scope,
+                load_path=load_path
             )
             print("Saving defender's model to pickle.")
             if retrain:
                 act_def.save(os.getcwd() + '/retrain_def/' + 'def_str_retrain' + str(0) + '.pkl', 'def_str_retrain' + str(0) + '.pkl' + '/')
             else:
-                act_def.save(DIR_def + "def_str_epoch" + str(epoch) + ".pkl", "def_str_epoch" + str(epoch) + '.pkl' + '/')
+                act_def.save(DIR_def + "def_str_epoch" + str(epoch) + ".pkl", "def_str_epoch" + str(0) + '.pkl' + '/')
     learner.sess.close()
 
 # for all strategies learned by retraining, the scope index is 0.
+# TODO: Have not been modified for transfer learning.
 def training_hado_att(game):
     param = game.param
     mix_str_def = game.hado_str(identity=0, param=param)
@@ -109,7 +119,6 @@ def training_hado_att(game):
     if len(mix_str_def) != len(game.def_str):
         raise ValueError("The length of mix_str_def and def_str does not match while retraining")
 
-    # env = copy.deepcopy(game.env)
     env = game.env
     env.reset_everything()
 
@@ -151,7 +160,6 @@ def training_hado_def(game):
     if len(mix_str_att) != len(game.att_str):
         raise ValueError("The length of mix_str_att and att_str does not match while training")
 
-    # env = copy.deepcopy(game.env)
     env = game.env
     env.reset_everything()
 

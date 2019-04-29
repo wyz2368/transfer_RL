@@ -14,11 +14,7 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
 
     T = env.T
 
-    for i in range(num_episodes): #can be run parallel
-
-        # G = copy.deepcopy(env.G_reserved)
-        # attacker = copy.deepcopy(env.attacker)
-        # defender = copy.deepcopy(env.defender)
+    for i in range(num_episodes):
 
         env.reset_everything()
         G = env.G
@@ -57,19 +53,22 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
         if "epoch1" in nn_def:
             def_uniform_flag = True
 
+        # TODO: Transfer Learning modification
         path = os.getcwd() + "/attacker_strategies/" + nn_att
         if att_uniform_flag:
             nn_att_act = fp.load_pkl(path)
         else:
+            att_scope = 'att_str_epoch' + str(1) + '.pkl'
             training_flag = 1
-            nn_att_act, sess1, graph1 = load_action_class(path, nn_att, game, training_flag)
+            nn_att_act, sess1, graph1 = load_action_class(path, att_scope, game, training_flag)
 
         path = os.getcwd() + "/defender_strategies/" + nn_def
         if def_uniform_flag:
             nn_def_act = fp.load_pkl(path)
         else:
+            def_scope = "def_str_epoch" + str(0) + '.pkl'
             training_flag = 0
-            nn_def_act, sess2, graph2 = load_action_class(path, nn_def, game, training_flag)
+            nn_def_act, sess2, graph2 = load_action_class(path, def_scope, game, training_flag)
 
         for t in range(T):
             timeleft = T - t

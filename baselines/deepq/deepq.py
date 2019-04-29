@@ -904,7 +904,10 @@ class Learner(object):
 
                 add_first_rew = True
 
-                if self.retrain and load_path is not None:
+                # if self.retrain and load_path is not None:
+                #     load_variables(load_path, sess=self.sess)
+
+                if load_path is not None:
                     load_variables(load_path, sess=self.sess)
 
                 if total_timesteps != 0:
@@ -930,14 +933,14 @@ class Learner(object):
                     model_file = os.path.join(td, "model")
                     model_saved = False
 
-                    if tf.train.latest_checkpoint(td) is not None and not self.retrain:
-                        # load_variables(model_file, sess=self.sess)
-                        # logger.log('Loaded model from {}'.format(model_file))
-                        # model_saved = True
-                        a = 0
-                    elif load_path is not None and not self.retrain:
-                        load_variables(load_path, sess=self.sess)
-                        # logger.log('Loaded model from {}'.format(load_path))
+                    # if tf.train.latest_checkpoint(td) is not None and not self.retrain:
+                    #     # load_variables(model_file, sess=self.sess)
+                    #     # logger.log('Loaded model from {}'.format(model_file))
+                    #     # model_saved = True
+                    #     a = 0
+                    # elif load_path is not None and not self.retrain:
+                    #     load_variables(load_path, sess=self.sess)
+                    #     # logger.log('Loaded model from {}'.format(load_path))
 
                     for t in range(total_timesteps):
                         if callback is not None:
