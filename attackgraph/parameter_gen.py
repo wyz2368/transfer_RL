@@ -24,9 +24,18 @@ def nn_param():
     param['num_episodes'] = 100
     param['threshold'] = 0.1
 
+    # transfer learning
+    param['trans_timesteps'] = 50000
+    param['trans_lr'] = 5e-5
+    param['trans_exploration_fraction'] = 0.5
+    param['trans_exploration_final_eps'] = 0.03
+
     param_path = os.getcwd() + '/network_parameters/param.json'
     jp.save_json_data(param_path, param)
     print("Network parameters have been saved in a json file successfully.")
+
+
+
 
 def nn_param1():
     param = {}
@@ -43,13 +52,19 @@ def nn_param1():
     param['checkpoint_freq'] = None
 
     #hado
-    param['retrain_timesteps'] = 200
+    param['retrain_timesteps'] = 2000
     param['hado_param'] = (4, 0.7, 0.286)
-    param['retrain_freq'] = 1000
+    param['retrain_freq'] = 500
 
     #simulation
     param['num_episodes'] = 10
     param['threshold'] = 0.1
+
+    # transfer learning
+    param['trans_timesteps'] = 1000
+    param['trans_lr'] = 5e-5
+    param['trans_exploration_fraction'] = 0.5
+    param['trans_exploration_final_eps'] = 0.03
 
     param_path = os.getcwd() + '/network_parameters/param.json'
     jp.save_json_data(param_path, param)

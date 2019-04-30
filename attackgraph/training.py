@@ -32,16 +32,27 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
     else:
         load_path = None
 
+    if transfer:
+        lr = param['trans_lr']
+        total_timesteps = param['trans_timesteps']
+        ex_frac = param['trans_exploration_fraction']
+        ex_final_eps = param['trans_exploration_final_eps']
+    else:
+        lr = param['lr']
+        total_timesteps = param['total_timesteps']
+        ex_frac = param['exploration_fraction']
+        ex_final_eps = param['exploration_final_eps']
+
     learner = Learner(transfer=transfer)
     with learner.graph.as_default():
         with learner.sess.as_default():
             act_att = learner.learn_multi_nets(
                 env,
                 network = models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
-                lr =param['lr'],
-                total_timesteps=param['total_timesteps'],
-                exploration_fraction=param['exploration_fraction'],
-                exploration_final_eps=param['exploration_final_eps'],
+                lr =lr,
+                total_timesteps=total_timesteps,
+                exploration_fraction=ex_frac,
+                exploration_final_eps=ex_final_eps,
                 print_freq=param['print_freq'],
                 param_noise=param['param_noise'],
                 gamma=param['gamma'],
@@ -85,16 +96,27 @@ def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
     else:
         load_path = None
 
+    if transfer:
+        lr = param['trans_lr']
+        total_timesteps = param['trans_timesteps']
+        ex_frac = param['trans_exploration_fraction']
+        ex_final_eps = param['trans_exploration_final_eps']
+    else:
+        lr = param['lr']
+        total_timesteps = param['total_timesteps']
+        ex_frac = param['exploration_fraction']
+        ex_final_eps = param['exploration_final_eps']
+
     learner = Learner(transfer=transfer)
     with learner.graph.as_default():
         with learner.sess.as_default():
             act_def = learner.learn_multi_nets(
                 env,
                 network=models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
-                lr=param['lr'],
-                total_timesteps=param['total_timesteps'],
-                exploration_fraction=param['exploration_fraction'],
-                exploration_final_eps=param['exploration_final_eps'],
+                lr=lr,
+                total_timesteps=total_timesteps,
+                exploration_fraction=ex_frac,
+                exploration_final_eps=ex_final_eps,
                 print_freq=param['print_freq'],
                 param_noise=param['param_noise'],
                 gamma=param['gamma'],

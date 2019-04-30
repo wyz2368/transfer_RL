@@ -129,7 +129,7 @@ def EGTA(start_hado=2, retrain=False, transfer=False, epoch=1, game_path=os.getc
     # while True:
         do_train_and_sim()
         game = fp.load_pkl(game_path)
-        epoch = fp.load_pkl(arg_path+'epoch_arg.pkl')
+        epoch = fp.load_pkl(arg_path + 'epoch_arg.pkl')
         #
         # find nash equilibrium using gambit analysis
         payoffmatrix_def = game.payoffmatrix_def
