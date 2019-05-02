@@ -136,22 +136,22 @@ def EGTA(env, game, start_hado=2, retrain=False, transfer=False, epoch=1, game_p
 
 
         print("Begin training attacker......")
-        training.training_att(game, mix_str_def, epoch, retrain=retrain_start, transfer=transfer_flag)
+        a_BD = training.training_att(game, mix_str_def, epoch, retrain=retrain_start, transfer=transfer_flag)
         print("Attacker training done......")
 
         print("Begin training defender......")
-        training.training_def(game, mix_str_att, epoch, retrain=retrain_start, transfer=transfer_flag)
+        d_BD = training.training_def(game, mix_str_att, epoch, retrain=retrain_start, transfer=transfer_flag)
         print("Defender training done......")
 
         mem1 = proc.memory_info().rss
 
         if retrain and epoch > start_hado:
             print("Begin retraining attacker......")
-            training.training_hado_att(game)
+            training.training_hado_att(game, transfer=transfer_flag)
             print("Attacker retraining done......")
 
             print("Begin retraining defender......")
-            training.training_hado_def(game)
+            training.training_hado_def(game, transfer=transfer_flag)
             print("Defender retraining done......")
 
             # Simulation for retrained strategies and choose the best one as player's strategy.
@@ -159,27 +159,27 @@ def EGTA(env, game, start_hado=2, retrain=False, transfer=False, epoch=1, game_p
             a_BD, d_BD = sim_retrain(env, game, mix_str_att, mix_str_def, epoch)
             print('Done retrained sim......')
 
-        else:
-
-            # Judge beneficial deviation
-            # one plays nn and another plays ne strategy
-            print("Simulating attacker payoff. New strategy vs. mixed opponent strategy.")
-            nn_att = "att_str_epoch" + str(epoch) + ".pkl"
-            nn_def = mix_str_def
-            # if MPI_flag:
-            #     a_BD, _ = do_MPI_sim(nn_att, nn_def)
-            # else:
-            a_BD, _ = series_sim(env, game, nn_att, nn_def, game.num_episodes)
-            print("Simulation done for a_BD.")
-
-            print("Simulating defender's payoff. New strategy vs. mixed opponent strategy.")
-            nn_att = mix_str_att
-            nn_def = "def_str_epoch" + str(epoch) + ".pkl"
-            # if MPI_flag:
-            #     _, d_BD = do_MPI_sim(nn_att, nn_def)
-            # else:
-            _, d_BD = series_sim(env, game, nn_att, nn_def, game.num_episodes)
-            print("Simulation done for d_BD.")
+        # else:
+        #
+        #     # Judge beneficial deviation
+        #     # one plays nn and another plays ne strategy
+        #     print("Simulating attacker payoff. New strategy vs. mixed opponent strategy.")
+        #     nn_att = "att_str_epoch" + str(epoch) + ".pkl"
+        #     nn_def = mix_str_def
+        #     # if MPI_flag:
+        #     #     a_BD, _ = do_MPI_sim(nn_att, nn_def)
+        #     # else:
+        #     a_BD, _ = series_sim(env, game, nn_att, nn_def, game.num_episodes)
+        #     print("Simulation done for a_BD.")
+        #
+        #     print("Simulating defender's payoff. New strategy vs. mixed opponent strategy.")
+        #     nn_att = mix_str_att
+        #     nn_def = "def_str_epoch" + str(epoch) + ".pkl"
+        #     # if MPI_flag:
+        #     #     _, d_BD = do_MPI_sim(nn_att, nn_def)
+        #     # else:
+        #     _, d_BD = series_sim(env, game, nn_att, nn_def, game.num_episodes)
+        #     print("Simulation done for d_BD.")
         mem2 = proc.memory_info().rss
 
         # #TODO: This may lead to early stop.

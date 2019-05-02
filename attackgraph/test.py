@@ -156,8 +156,8 @@ identity = 0
 # print(c)
 # print(a+c)
 
-a = [3,4,5,(3,2)]
-print(a+[4])
+path = os.getcwd() + '/defender_strategies/def_str_epoch3.pkl'
+a = fp.load_pkl(path)
 
 
 

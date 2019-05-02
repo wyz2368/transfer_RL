@@ -128,4 +128,4 @@ class Game_data(object):
             denom += gamma**(num_ne-1-i)
 
         denom += 1
-        return np.round(delta/denom, 2)
+        return delta/denom

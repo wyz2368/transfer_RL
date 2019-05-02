@@ -14,6 +14,17 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
 
     T = env.T
 
+    # Test if nn_att and nn_def point to one single strategy.
+    single_str_att = True
+    single_str_def = True
+    if isinstance(nn_att, np.ndarray):
+        if len(np.where(nn_att > 0.95)[0]) != 1:
+            single_str_att = False
+
+    if isinstance(nn_def, np.ndarray):
+        if len(np.where(nn_def > 0.95)[0]) != 1:
+            single_str_def = False
+
     for i in range(num_episodes):
 
         env.reset_everything()
@@ -24,51 +35,88 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
 
         aReward = 0
         dReward = 0
-        def_uniform_flag = False
-        att_uniform_flag = False
 
-        nn_att = copy.copy(nn_att_saved)
-        nn_def = copy.copy(nn_def_saved)
+        if i == 0 or not single_str_att:
+            att_uniform_flag = False
+            nn_att = copy.copy(nn_att_saved)
+            if isinstance(nn_att, np.ndarray):
+                str_set = game.att_str
+                nn_att = np.random.choice(str_set, p=nn_att)
 
-        # nn_att and nn_def here can be either np.ndarray or str. np.ndarray represents a mixed strategy.
-        # A str represents the name of a strategy.
+            if "epoch1" in nn_att:
+                att_uniform_flag = True
 
-        if isinstance(nn_att, np.ndarray) and isinstance(nn_def, str):
-            str_set = game.att_str
-            nn_att = np.random.choice(str_set, p=nn_att)
+            path = os.getcwd() + "/attacker_strategies/" + nn_att
+            if att_uniform_flag:
+                nn_att_act = fp.load_pkl(path)
+            else:
+                att_scope = 'att_str_epoch' + str(1) + '.pkl'
+                training_flag = 1
+                nn_att_act, sess1, graph1 = load_action_class(path, att_scope, game, training_flag)
 
-        if isinstance(nn_att, str) and isinstance(nn_def, np.ndarray):
-            str_set = game.def_str
-            nn_def = np.random.choice(str_set, p=nn_def)
+        if i == 0 or not single_str_def:
+            def_uniform_flag = False
+            nn_def = copy.copy(nn_def_saved)
+            if isinstance(nn_def, np.ndarray):
+                str_set = game.def_str
+                nn_def = np.random.choice(str_set, p=nn_def)
 
-        if isinstance(nn_att, np.ndarray) and isinstance(nn_def, np.ndarray):
-            str_set = game.att_str
-            nn_att = np.random.choice(str_set, p=nn_att)
-            str_set = game.def_str
-            nn_def = np.random.choice(str_set, p=nn_def)
+            if "epoch1" in nn_def:
+                def_uniform_flag = True
 
-        if "epoch1" in nn_att:
-            att_uniform_flag = True
+            path = os.getcwd() + "/defender_strategies/" + nn_def
+            if def_uniform_flag:
+                nn_def_act = fp.load_pkl(path)
+            else:
+                def_scope = "def_str_epoch" + str(0) + '.pkl'
+                training_flag = 0
+                nn_def_act, sess2, graph2 = load_action_class(path, def_scope, game, training_flag)
 
-        if "epoch1" in nn_def:
-            def_uniform_flag = True
-
-        # TODO: Transfer Learning modification
-        path = os.getcwd() + "/attacker_strategies/" + nn_att
-        if att_uniform_flag:
-            nn_att_act = fp.load_pkl(path)
-        else:
-            att_scope = 'att_str_epoch' + str(1) + '.pkl'
-            training_flag = 1
-            nn_att_act, sess1, graph1 = load_action_class(path, att_scope, game, training_flag)
-
-        path = os.getcwd() + "/defender_strategies/" + nn_def
-        if def_uniform_flag:
-            nn_def_act = fp.load_pkl(path)
-        else:
-            def_scope = "def_str_epoch" + str(0) + '.pkl'
-            training_flag = 0
-            nn_def_act, sess2, graph2 = load_action_class(path, def_scope, game, training_flag)
+        # def_uniform_flag = False
+        # att_uniform_flag = False
+        #
+        # nn_att = copy.copy(nn_att_saved)
+        # nn_def = copy.copy(nn_def_saved)
+        #
+        # # nn_att and nn_def here can be either np.ndarray or str. np.ndarray represents a mixed strategy.
+        # # A str represents the name of a strategy.
+        #
+        # if isinstance(nn_att, np.ndarray) and isinstance(nn_def, str):
+        #     str_set = game.att_str
+        #     nn_att = np.random.choice(str_set, p=nn_att)
+        #
+        # if isinstance(nn_att, str) and isinstance(nn_def, np.ndarray):
+        #     str_set = game.def_str
+        #     nn_def = np.random.choice(str_set, p=nn_def)
+        #
+        # if isinstance(nn_att, np.ndarray) and isinstance(nn_def, np.ndarray):
+        #     str_set = game.att_str
+        #     nn_att = np.random.choice(str_set, p=nn_att)
+        #     str_set = game.def_str
+        #     nn_def = np.random.choice(str_set, p=nn_def)
+        #
+        # if "epoch1" in nn_att:
+        #     att_uniform_flag = True
+        #
+        # if "epoch1" in nn_def:
+        #     def_uniform_flag = True
+        #
+        # # TODO: Transfer Learning modification
+        # path = os.getcwd() + "/attacker_strategies/" + nn_att
+        # if att_uniform_flag:
+        #     nn_att_act = fp.load_pkl(path)
+        # else:
+        #     att_scope = 'att_str_epoch' + str(1) + '.pkl'
+        #     training_flag = 1
+        #     nn_att_act, sess1, graph1 = load_action_class(path, att_scope, game, training_flag)
+        #
+        # path = os.getcwd() + "/defender_strategies/" + nn_def
+        # if def_uniform_flag:
+        #     nn_def_act = fp.load_pkl(path)
+        # else:
+        #     def_scope = "def_str_epoch" + str(0) + '.pkl'
+        #     training_flag = 0
+        #     nn_def_act, sess2, graph2 = load_action_class(path, def_scope, game, training_flag)
 
         for t in range(T):
             timeleft = T - t
@@ -127,6 +175,16 @@ def series_sim_retrain(env, game, nn_att, nn_def, num_episodes):
 
     T = env.T
 
+    single_str_att = True
+    single_str_def = True
+    if isinstance(nn_att, np.ndarray):
+        if len(np.where(nn_att > 0.95)[0]) != 1:
+            single_str_att = False
+
+    if isinstance(nn_def, np.ndarray):
+        if len(np.where(nn_def > 0.95)[0]) != 1:
+            single_str_def = False
+
     for i in range(num_episodes): #can be run parallel
 
         # G = copy.deepcopy(env.G_reserved)
@@ -141,68 +199,121 @@ def series_sim_retrain(env, game, nn_att, nn_def, num_episodes):
 
         aReward = 0
         dReward = 0
-        def_uniform_flag = False
-        att_uniform_flag = False
 
-        att_mixed_flag = False
-        def_mixed_flag = False
+        if i == 0 or not single_str_att:
+            att_uniform_flag = False
+            att_mixed_flag = False
 
-        nn_att = copy.copy(nn_att_saved)
-        nn_def = copy.copy(nn_def_saved)
+            nn_att = copy.copy(nn_att_saved)
+            if isinstance(nn_att, np.ndarray):
+                att_mixed_flag = True
+                str_set = game.att_str
+                nn_att = np.random.choice(str_set, p=nn_att)
 
-        # nn_att and nn_def here can be either np.ndarray or str. np.ndarray represents a mixed strategy.
-        # A str represents the name of a strategy.
+            if "epoch1" in nn_att:
+                att_uniform_flag = True
 
-        if isinstance(nn_att, np.ndarray) and isinstance(nn_def, str):
-            att_mixed_flag = True
-            str_set = game.att_str
-            nn_att = np.random.choice(str_set, p=nn_att)
+            if att_mixed_flag:
+                path = os.getcwd() + "/attacker_strategies/" + nn_att
+                scope_att = nn_att
+            else:
+                path = os.getcwd() + "/retrain_att/" + nn_att
+                scope_att = 'att_str_retrain' + str(0) + '.pkl'
 
-        if isinstance(nn_att, str) and isinstance(nn_def, np.ndarray):
-            def_mixed_flag = True
-            str_set = game.def_str
-            nn_def = np.random.choice(str_set, p=nn_def)
+            if att_uniform_flag:
+                nn_att_act = fp.load_pkl(path)
+            else:
+                training_flag = 1
+                nn_att_act, sess1, graph1 = load_action_class(path, scope_att, game, training_flag)
 
-        if isinstance(nn_att, np.ndarray) and isinstance(nn_def, np.ndarray):
-            str_set = game.att_str
-            nn_att = np.random.choice(str_set, p=nn_att)
-            str_set = game.def_str
-            nn_def = np.random.choice(str_set, p=nn_def)
+        if i == 0 or not single_str_def:
+            def_uniform_flag = False
+            def_mixed_flag = False
 
-        if not att_mixed_flag and not def_mixed_flag:
-            raise ValueError("One player should play mixed strategy in retraining simulation.")
+            nn_def = copy.copy(nn_def_saved)
+            if isinstance(nn_def, np.ndarray):
+                def_mixed_flag = True
+                str_set = game.def_str
+                nn_def = np.random.choice(str_set, p=nn_def)
 
-        if "epoch1" in nn_att:
-            att_uniform_flag = True
+            if "epoch1" in nn_def:
+                def_uniform_flag = True
 
-        if "epoch1" in nn_def:
-            def_uniform_flag = True
+            if def_mixed_flag:
+                path = os.getcwd() + "/defender_strategies/" + nn_def
+                scope_def = nn_def
+            else:
+                path = os.getcwd() + "/retrain_def/" + nn_def
+                scope_def = 'def_str_retrain' + str(0) + '.pkl'
 
-        if att_mixed_flag:
-            path = os.getcwd() + "/attacker_strategies/" + nn_att
-            scope_att = nn_att
-        else:
-            path = os.getcwd() + "/retrain_att/" + nn_att
-            scope_att = 'att_str_retrain' + str(0) + '.pkl'
+            if def_uniform_flag:
+                nn_def_act = fp.load_pkl(path)
+            else:
+                training_flag = 0
+                nn_def_act, sess2, graph2 = load_action_class(path, scope_def, game, training_flag)
 
-        if att_uniform_flag:
-            nn_att_act = fp.load_pkl(path)
-        else:
-            training_flag = 1
-            nn_att_act, sess1, graph1 = load_action_class(path, scope_att, game, training_flag)
-
-        if def_mixed_flag:
-            path = os.getcwd() + "/defender_strategies/" + nn_def
-            scope_def = nn_def
-        else:
-            path = os.getcwd() + "/retrain_def/" + nn_def
-            scope_def = 'def_str_retrain' + str(0) + '.pkl'
-
-        if def_uniform_flag:
-            nn_def_act = fp.load_pkl(path)
-        else:
-            training_flag = 0
-            nn_def_act, sess2, graph2 = load_action_class(path, scope_def, game, training_flag)
+        # def_uniform_flag = False
+        # att_uniform_flag = False
+        #
+        # att_mixed_flag = False
+        # def_mixed_flag = False
+        #
+        # nn_att = copy.copy(nn_att_saved)
+        # nn_def = copy.copy(nn_def_saved)
+        #
+        # # nn_att and nn_def here can be either np.ndarray or str. np.ndarray represents a mixed strategy.
+        # # A str represents the name of a strategy.
+        #
+        # if isinstance(nn_att, np.ndarray) and isinstance(nn_def, str):
+        #     att_mixed_flag = True
+        #     str_set = game.att_str
+        #     nn_att = np.random.choice(str_set, p=nn_att)
+        #
+        # if isinstance(nn_att, str) and isinstance(nn_def, np.ndarray):
+        #     def_mixed_flag = True
+        #     str_set = game.def_str
+        #     nn_def = np.random.choice(str_set, p=nn_def)
+        #
+        # if isinstance(nn_att, np.ndarray) and isinstance(nn_def, np.ndarray):
+        #     str_set = game.att_str
+        #     nn_att = np.random.choice(str_set, p=nn_att)
+        #     str_set = game.def_str
+        #     nn_def = np.random.choice(str_set, p=nn_def)
+        #
+        # if not att_mixed_flag and not def_mixed_flag:
+        #     raise ValueError("One player should play mixed strategy in retraining simulation.")
+        #
+        # if "epoch1" in nn_att:
+        #     att_uniform_flag = True
+        #
+        # if "epoch1" in nn_def:
+        #     def_uniform_flag = True
+        #
+        # if att_mixed_flag:
+        #     path = os.getcwd() + "/attacker_strategies/" + nn_att
+        #     scope_att = nn_att
+        # else:
+        #     path = os.getcwd() + "/retrain_att/" + nn_att
+        #     scope_att = 'att_str_retrain' + str(0) + '.pkl'
+        #
+        # if att_uniform_flag:
+        #     nn_att_act = fp.load_pkl(path)
+        # else:
+        #     training_flag = 1
+        #     nn_att_act, sess1, graph1 = load_action_class(path, scope_att, game, training_flag)
+        #
+        # if def_mixed_flag:
+        #     path = os.getcwd() + "/defender_strategies/" + nn_def
+        #     scope_def = nn_def
+        # else:
+        #     path = os.getcwd() + "/retrain_def/" + nn_def
+        #     scope_def = 'def_str_retrain' + str(0) + '.pkl'
+        #
+        # if def_uniform_flag:
+        #     nn_def_act = fp.load_pkl(path)
+        # else:
+        #     training_flag = 0
+        #     nn_def_act, sess2, graph2 = load_action_class(path, scope_def, game, training_flag)
 
         for t in range(T):
             timeleft = T - t

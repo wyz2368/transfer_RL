@@ -46,7 +46,7 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
     learner = Learner(transfer=transfer)
     with learner.graph.as_default():
         with learner.sess.as_default():
-            act_att = learner.learn_multi_nets(
+            act_att, a_BD = learner.learn_multi_nets(
                 env,
                 network = models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
                 lr =lr,
@@ -67,7 +67,7 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
             else:
                 act_att.save(DIR_att + "att_str_epoch" + str(epoch) + ".pkl", 'att_str_epoch' + str(1) + '.pkl' + '/')
     learner.sess.close()
-
+    return a_BD
 
 
 def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
@@ -110,7 +110,7 @@ def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
     learner = Learner(transfer=transfer)
     with learner.graph.as_default():
         with learner.sess.as_default():
-            act_def = learner.learn_multi_nets(
+            act_def, d_BD = learner.learn_multi_nets(
                 env,
                 network=models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
                 lr=lr,
@@ -131,10 +131,11 @@ def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
             else:
                 act_def.save(DIR_def + "def_str_epoch" + str(epoch) + ".pkl", "def_str_epoch" + str(0) + '.pkl' + '/')
     learner.sess.close()
+    return d_BD
 
 # for all strategies learned by retraining, the scope index is 0.
 # TODO: Have not been modified for transfer learning.
-def training_hado_att(game):
+def training_hado_att(game, transfer=False):
     param = game.param
     mix_str_def = game.hado_str(identity=0, param=param)
 
@@ -152,16 +153,27 @@ def training_hado_att(game):
     param_path = os.getcwd() + '/network_parameters/param.json'
     param = jp.load_json_data(param_path)
 
+    if transfer:
+        lr = param['trans_lr']
+        total_timesteps = param['trans_timesteps']
+        ex_frac = param['trans_exploration_fraction']
+        ex_final_eps = param['trans_exploration_final_eps']
+    else:
+        lr = param['lr']
+        total_timesteps = param['total_timesteps']
+        ex_frac = param['exploration_fraction']
+        ex_final_eps = param['exploration_final_eps']
+
     learner = Learner(retrain=True, freq=param['retrain_freq'])
     with learner.graph.as_default():
         with learner.sess.as_default():
-            act_att = learner.learn_multi_nets(
+            act_att,_ = learner.learn_multi_nets(
                 env,
                 network = models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
-                lr =param['lr'],
-                total_timesteps=param['retrain_timesteps'],
-                exploration_fraction=param['exploration_fraction'],
-                exploration_final_eps=param['exploration_final_eps'],
+                lr = lr,
+                total_timesteps=total_timesteps,
+                exploration_fraction=ex_frac,
+                exploration_final_eps=ex_final_eps,
                 print_freq=param['print_freq'],
                 param_noise=param['param_noise'],
                 gamma=param['gamma'],
@@ -175,7 +187,7 @@ def training_hado_att(game):
     learner.sess.close()
 
 
-def training_hado_def(game):
+def training_hado_def(game, transfer=False):
     param = game.param
     mix_str_att = game.hado_str(identity=1, param=param)
 
@@ -193,16 +205,27 @@ def training_hado_def(game):
     param_path = os.getcwd() + '/network_parameters/param.json'
     param = jp.load_json_data(param_path)
 
+    if transfer:
+        lr = param['trans_lr']
+        total_timesteps = param['trans_timesteps']
+        ex_frac = param['trans_exploration_fraction']
+        ex_final_eps = param['trans_exploration_final_eps']
+    else:
+        lr = param['lr']
+        total_timesteps = param['total_timesteps']
+        ex_frac = param['exploration_fraction']
+        ex_final_eps = param['exploration_final_eps']
+
     learner = Learner(retrain=True, freq=param['retrain_freq'])
     with learner.graph.as_default():
         with learner.sess.as_default():
-            act_def = learner.learn_multi_nets(
+            act_def,_ = learner.learn_multi_nets(
                 env,
                 network=models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
-                lr=param['lr'],
-                total_timesteps=param['retrain_timesteps'],
-                exploration_fraction=param['exploration_fraction'],
-                exploration_final_eps=param['exploration_final_eps'],
+                lr=lr,
+                total_timesteps=total_timesteps,
+                exploration_fraction=ex_frac,
+                exploration_final_eps=ex_final_eps,
                 print_freq=param['print_freq'],
                 param_noise=param['param_noise'],
                 gamma=param['gamma'],

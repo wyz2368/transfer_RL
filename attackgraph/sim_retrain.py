@@ -26,6 +26,11 @@ def sim_retrain_att(env, game, mix_str_def,  epoch):
     DIR = os.getcwd() + '/retrain_att/'
     str_list = [name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name)) and '.pkl' in name]
     num_str = len(str_list)
+    if num_str != len(rewards_att):
+        print('***************************')
+        print('Retrain reward length does not match!')
+        print('***************************')
+        raise ValueError('Retrain reward length does not match!')
     util = []
     for i in range(num_str):
         nn_att = 'att_str_retrain' + str(i) + ".pkl"
@@ -50,6 +55,11 @@ def sim_retrain_def(env, game, mix_str_att,  epoch):
     DIR = os.getcwd() + '/retrain_def/'
     str_list = [name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name)) and '.pkl' in name]
     num_str = len(str_list)
+    if num_str != len(rewards_def):
+        print('***************************')
+        print('Retrain reward length does not match!')
+        print('***************************')
+        raise ValueError('Retrain reward length does not match!')
     util = []
     for i in range(num_str):
         nn_att = mix_str_att
