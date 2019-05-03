@@ -16,6 +16,12 @@ class Game_data(object):
         self.dir_def = os.getcwd() + '/defender_strategies/'
         self.dir_att = os.getcwd() + '/attacker_strategies/'
 
+        # payoff and beneficial deviation
+        self.att_BD_list = []
+        self.def_BD_list = []
+        self.att_payoff = []
+        self.def_payoff = []
+
         # define the name of strategy as str_def_epoch1/str_att_epoch1
 
         self.num_episodes = num_episodes

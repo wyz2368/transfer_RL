@@ -4,6 +4,7 @@ import os
 import datetime
 import sys
 import psutil
+import warnings
 
 # Modules import
 from attackgraph import DagGenerator as dag
@@ -199,6 +200,8 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, g
     # os._exit(os.EX_OK)
 
 if __name__ == '__main__':
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    warnings.filterwarnings("ignore")
     game = initialize(env_name='test_env')
     # EGTA(env, game, retrain=True)
     EGTA(retrain=True)

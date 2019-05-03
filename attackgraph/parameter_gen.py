@@ -42,7 +42,7 @@ def nn_param1():
     param['num_hidden'] = 256
     param['num_layers'] = 1
     param['lr'] = 5e-5
-    param['total_timesteps'] = 2000 #TODO: total time steps should be larger than hado time step.
+    param['total_timesteps'] = 3000 #TODO: total time steps should be larger than hado time step.
     param['exploration_fraction'] = 0.5
     param['exploration_final_eps'] = 0.03
     param['print_freq'] = 250

@@ -1,5 +1,6 @@
 import numpy as np
 from attackgraph import file_op as fp
+from attackgraph import json_op as jp
 from baselines.common import models
 import os
 from baselines.deepq.deepq import learn_multi_nets, learn
@@ -45,9 +46,12 @@ def sample_strategy_from_mixed(env, str_set, mix_str, identity):
     flag = env.training_flag
     env.set_training_flag(identity)
 
+    param_path = os.getcwd() + '/network_parameters/param.json'
+    param = jp.load_json_data(param_path)
+
     act = learn(
         env,
-        network=models.mlp(num_hidden=256, num_layers=1), #TODO: hard coding.
+        network=models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
         total_timesteps=0,
         load_path= path + picked_str,
         scope = scope + '/'  #picked_str + '/'
