@@ -25,7 +25,7 @@ def nn_param():
     param['threshold'] = 0.1
 
     # transfer learning
-    param['trans_timesteps'] = 50000
+    param['trans_timesteps'] = 100000
     param['trans_lr'] = 5e-5
     param['trans_exploration_fraction'] = 0.5
     param['trans_exploration_final_eps'] = 0.03
@@ -71,4 +71,4 @@ def nn_param1():
     print("Network parameters have been saved in a json file successfully.")
 
 
-nn_param1()
+nn_param()

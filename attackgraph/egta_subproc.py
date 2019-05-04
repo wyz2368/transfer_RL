@@ -41,6 +41,9 @@ def train_and_sim():
     mix_str_att = game.nasheq[epoch][1]
     aPayoff, dPayoff = util.payoff_mixed_NE(game, epoch)
 
+    game.att_payoff.append(aPayoff)
+    game.def_payoff.append(dPayoff)
+
     # increase epoch
     epoch += 1
     print("Current epoch is " + str(epoch))
@@ -79,6 +82,9 @@ def train_and_sim():
         print('Begin retrained sim......')
         a_BD, d_BD = sim_retrain(env, game, mix_str_att, mix_str_def, epoch)
         print('Done retrained sim......')
+
+    game.att_BD_list.append(a_BD)
+    game.def_BD_list.append(d_BD)
 
     # else:
     #
@@ -119,6 +125,11 @@ def train_and_sim():
 
     game.env.attacker.nn_att = None
     game.env.defender.nn_def = None
+
+    print('a_BD_list', game.att_BD_list)
+    print('aPayoff', game.att_payoff)
+    print('d_BD_list', game.def_BD_list)
+    print('dPayoff', game.def_payoff)
 
     fp.save_pkl(game, game_path)
     fp.save_pkl(epoch, arg_path+'epoch_arg.pkl')

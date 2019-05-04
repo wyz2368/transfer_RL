@@ -24,4 +24,4 @@ module load python-anaconda3/latest-3.6
 
 cd ${PBS_O_WORKDIR}
 
-python deepgraph_runner.py > out.txt
+python deepgraph_runner_subproc.py > out.txt

@@ -125,7 +125,7 @@ def EGTA(start_hado=2, retrain=False, transfer=False, epoch=1, game_path=os.getc
     fp.save_pkl(hado_arg,path=arg_path+'hado_arg.pkl')
     fp.save_pkl(epoch_arg,path=arg_path+'epoch_arg.pkl')
 
-    count = 8
+    count = 18
     while count != 0:
     # while True:
         do_train_and_sim()
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     game = initialize(env_name='test_env')
     # EGTA(env, game, retrain=True)
-    EGTA(retrain=True)
+    EGTA(retrain=False, transfer=True)
     # EGTA_restart(restart_epoch=4)
 
 

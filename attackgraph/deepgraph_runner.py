@@ -334,6 +334,12 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, g
         game.env.attacker.nn_att = None
         game.env.defender.nn_def = None
         fp.save_pkl(game, game_path)
+
+        print('a_BD_list', game.att_BD_list)
+        print('aPayoff', game.att_payoff)
+        print('d_BD_list', game.def_BD_list)
+        print('dPayoff', game.def_payoff)
+
         print("Round_" + str(epoch) + " has done and game was saved.")
         print("=======================================================")
         # break
