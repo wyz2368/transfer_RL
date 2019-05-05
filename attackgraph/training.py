@@ -39,7 +39,7 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
         ex_final_eps = param['trans_exploration_final_eps']
     else:
         lr = param['lr']
-        total_timesteps = param['total_timesteps']
+        total_timesteps = param['total_timesteps_def']
         ex_frac = param['exploration_fraction']
         ex_final_eps = param['exploration_final_eps']
 
@@ -103,7 +103,7 @@ def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
         ex_final_eps = param['trans_exploration_final_eps']
     else:
         lr = param['lr']
-        total_timesteps = param['total_timesteps']
+        total_timesteps = param['total_timesteps_def']
         ex_frac = param['exploration_fraction']
         ex_final_eps = param['exploration_final_eps']
 
