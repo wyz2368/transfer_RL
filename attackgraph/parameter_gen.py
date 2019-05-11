@@ -13,7 +13,7 @@ def nn_param():
     param['print_freq'] = 250
     param['param_noise'] = False
     param['gamma'] = 0.99
-    param['prioritized_replay'] = True
+    param['prioritized_replay'] = False
     param['checkpoint_freq'] = 30000
 
     #hado
@@ -22,11 +22,11 @@ def nn_param():
     param['retrain_freq'] = 100000
 
     #simulation
-    param['num_episodes'] = 100
+    param['num_episodes'] = 250
     param['threshold'] = 0.1
 
     # transfer learning
-    param['trans_timesteps'] = 300000
+    param['trans_timesteps'] = 200000
     param['trans_lr'] = 5e-5
     param['trans_exploration_fraction'] = 0.5
     param['trans_exploration_final_eps'] = 0.03

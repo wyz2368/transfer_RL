@@ -97,7 +97,7 @@ def cnn_to_mlp(convs, hiddens, dueling=False, layer_norm=False):
 
 
 
-def build_q_func(network, hiddens=[256], dueling=True, layer_norm=False, **network_kwargs):
+def build_q_func(network, hiddens=[256], dueling=False, layer_norm=False, **network_kwargs):
     if isinstance(network, str):
         from baselines.common.models import get_network_builder
         network = get_network_builder(network)(**network_kwargs)

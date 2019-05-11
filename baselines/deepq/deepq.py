@@ -745,6 +745,7 @@ class Learner(object):
                          callback=None,
                          load_path=None,
                          scope='deepq',
+                         epoch=-1,
                          **network_kwargs
                          ):
         """Train a deepq model.
@@ -895,6 +896,7 @@ class Learner(object):
                 U.initialize()
                 update_target()
 
+                mean_rew_list = []
                 retrain_episode_rewards = []
                 episode_rewards = [0.0]
                 saved_mean_reward = None
@@ -1029,7 +1031,8 @@ class Learner(object):
                             # Update target network periodically.
                             update_target()
 
-                        mean_100ep_reward = round(np.mean(episode_rewards[-101:-1]), 1)
+                        mean_100ep_reward = round(np.mean(episode_rewards[-251:-1]), 1)
+                        mean_rew_list.append(mean_100ep_reward)
                         num_episodes = len(episode_rewards)
                         # if done and print_freq is not None and len(episode_rewards) % print_freq == 0:
                         #     logger.record_tabular("steps", t)
@@ -1088,6 +1091,17 @@ class Learner(object):
                         else:
                             rew_path = os.getcwd() + '/retrained_rew/' + 'rewards_att.pkl'
                         fp.save_pkl(retrain_episode_rewards, rew_path)
+
+
+                    if total_timesteps != 0:
+                        if training_flag == 0:
+                            path = os.getcwd() + '/learning_curve/def_data' + str(epoch) + '.pkl'
+                            fp.save_pkl(mean_rew_list,path)
+                        elif training_flag == 1:
+                            path = os.getcwd() + '/learning_curve/att_data' + str(epoch) + '.pkl'
+                            fp.save_pkl(mean_rew_list, path)
+                        else:
+                            raise ValueError("Error training flag.")
 
         if total_timesteps == 0:
             return act

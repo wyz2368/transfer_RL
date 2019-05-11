@@ -59,7 +59,8 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
                 prioritized_replay=param['prioritized_replay'],
                 checkpoint_freq=param['checkpoint_freq'],
                 scope = scope,
-                load_path=load_path
+                load_path=load_path,
+                epoch=epoch
             )
             print("Saving attacker's model to pickle.")
             if retrain:
@@ -123,7 +124,8 @@ def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
                 prioritized_replay=param['prioritized_replay'],
                 checkpoint_freq=param['checkpoint_freq'],
                 scope = scope,
-                load_path=load_path
+                load_path=load_path,
+                epoch=-1
             )
             print("Saving defender's model to pickle.")
             if retrain:
@@ -165,6 +167,7 @@ def training_hado_att(game, transfer=False):
         ex_final_eps = param['exploration_final_eps']
 
     learner = Learner(retrain=True, freq=param['retrain_freq'])
+    #TODO: add epoch???
     with learner.graph.as_default():
         with learner.sess.as_default():
             act_att,_ = learner.learn_multi_nets(

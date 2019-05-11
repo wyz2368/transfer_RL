@@ -3,6 +3,7 @@ import numpy as np
 import os
 import datetime
 import sys
+sys.path.append('/home/wangyzh/transfer')
 import psutil
 import warnings
 
@@ -110,7 +111,7 @@ def EGTA(env, game, start_hado=2, retrain=False, transfer=False, epoch=1, game_p
 
     proc = psutil.Process(os.getpid())
 
-    count = 10
+    count = 18
     while count != 0:
     # while True:
         mem0 = proc.memory_info().rss
