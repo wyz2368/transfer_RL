@@ -142,7 +142,7 @@ class Attacker(object):
                 canAttack.append(0)
                 continue
             if G.nodes[andnode]['root'] == 1 and G.nodes[andnode]['state'] == 1:
-                canAttack.append(-100)
+                canAttack.append(-1000)
                 continue
             precondflag = 1
             precond = G.predecessors(andnode)
@@ -153,13 +153,13 @@ class Attacker(object):
             if G.nodes[andnode]['state'] == 0 and precondflag:
                 canAttack.append(0)
             else:
-                canAttack.append(-100)
+                canAttack.append(-1000)
 
         for (father, son) in self.ORedges:
             if G.nodes[father]['state'] == 1 and G.nodes[son]['state'] == 0:
                 canAttack.append(0)
             else:
-                canAttack.append(-100)
+                canAttack.append(-1000)
 
         canAttack.append(0) # mask pass with 0.
         return canAttack

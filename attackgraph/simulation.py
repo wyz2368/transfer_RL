@@ -43,7 +43,7 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
                 str_set = game.att_str
                 nn_att = np.random.choice(str_set, p=nn_att)
 
-            if "epoch1" in nn_att:
+            if "epoch1.pkl" in nn_att:
                 att_uniform_flag = True
 
             path = os.getcwd() + "/attacker_strategies/" + nn_att
@@ -61,7 +61,7 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
                 str_set = game.def_str
                 nn_def = np.random.choice(str_set, p=nn_def)
 
-            if "epoch1" in nn_def:
+            if "epoch1.pkl" in nn_def:
                 def_uniform_flag = True
 
             path = os.getcwd() + "/defender_strategies/" + nn_def
@@ -210,7 +210,7 @@ def series_sim_retrain(env, game, nn_att, nn_def, num_episodes):
                 str_set = game.att_str
                 nn_att = np.random.choice(str_set, p=nn_att)
 
-            if "epoch1" in nn_att:
+            if "epoch1.pkl" in nn_att:
                 att_uniform_flag = True
 
             if att_mixed_flag:
@@ -236,7 +236,7 @@ def series_sim_retrain(env, game, nn_att, nn_def, num_episodes):
                 str_set = game.def_str
                 nn_def = np.random.choice(str_set, p=nn_def)
 
-            if "epoch1" in nn_def:
+            if "epoch1.pkl" in nn_def:
                 def_uniform_flag = True
 
             if def_mixed_flag:

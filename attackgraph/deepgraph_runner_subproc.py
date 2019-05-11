@@ -52,6 +52,7 @@ def initialize(load_env=None, env_name=None):
 
     # save graph copy
     env.save_graph_copy()
+    env.save_mask_copy()
 
     # create players and point to their env
     env.create_players()

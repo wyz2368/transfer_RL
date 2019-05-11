@@ -604,6 +604,9 @@ class Environment(object):
     def save_graph_copy(self):
         self.G_reserved = copy.deepcopy(self.G)
 
+    def save_mask_copy(self):
+        self.G_mask = copy.deepcopy(self.G)
+
     def reset_graph(self):
         self.G = copy.deepcopy(self.G_reserved)
 
