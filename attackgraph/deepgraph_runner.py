@@ -3,7 +3,7 @@ import numpy as np
 import os
 import datetime
 import sys
-sys.path.append('/home/wangyzh/transfer')
+sys.path.append('/home/wangyzh/Transfer')
 import psutil
 import warnings
 
@@ -356,7 +356,7 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, g
 if __name__ == '__main__':
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     warnings.filterwarnings("ignore")
-    game = initialize(env_name='test_env')
+    game = initialize(load_env='run_env_B', env_name=None)
     # EGTA(env, game, retrain=True)
     EGTA(game.env, game, retrain=False, transfer=True)
     # EGTA_restart(restart_epoch=4)

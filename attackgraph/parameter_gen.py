@@ -26,7 +26,8 @@ def nn_param():
     param['threshold'] = 0.1
 
     # transfer learning
-    param['trans_timesteps'] = 200000
+    param['trans_timesteps_att'] = 200000
+    param['trans_timesteps_def'] = 300000
     param['trans_lr'] = 5e-5
     param['trans_exploration_fraction'] = 0.5
     param['trans_exploration_final_eps'] = 0.03
@@ -63,7 +64,8 @@ def nn_param1():
     param['threshold'] = 0.1
 
     # transfer learning
-    param['trans_timesteps'] = 1000
+    param['trans_timesteps_att'] = 1000
+    param['trans_timesteps_def'] = 1000
     param['trans_lr'] = 5e-5
     param['trans_exploration_fraction'] = 0.5
     param['trans_exploration_final_eps'] = 0.03
