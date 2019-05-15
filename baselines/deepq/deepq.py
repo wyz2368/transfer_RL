@@ -1096,7 +1096,7 @@ class Learner(object):
                     if total_timesteps != 0:
                         if training_flag == 0:
                             path = os.getcwd() + '/learning_curve/def_data' + str(epoch) + '.pkl'
-                            fp.save_pkl(mean_rew_list,path)
+                            fp.save_pkl(mean_rew_list, path)
                         elif training_flag == 1:
                             path = os.getcwd() + '/learning_curve/att_data' + str(epoch) + '.pkl'
                             fp.save_pkl(mean_rew_list, path)

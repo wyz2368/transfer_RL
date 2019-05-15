@@ -10,6 +10,8 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
     if len(mix_str_def) != len(game.def_str):
         raise ValueError("The length of mix_str_def and def_str does not match while training")
 
+    print("training_att mix_str_def is ", mix_str_def)
+
     env = game.env
     env.reset_everything()
 
@@ -39,7 +41,7 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
         ex_final_eps = param['trans_exploration_final_eps']
     else:
         lr = param['lr']
-        total_timesteps = param['total_timesteps_def']
+        total_timesteps = param['total_timesteps_att']
         ex_frac = param['exploration_fraction']
         ex_final_eps = param['exploration_final_eps']
 
@@ -74,6 +76,8 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
 def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
     if len(mix_str_att) != len(game.att_str):
         raise ValueError("The length of mix_str_att and att_str does not match while retraining")
+
+    print("training_def mix_str_att is ", mix_str_att)
 
     env = game.env
     env.reset_everything()
@@ -125,7 +129,7 @@ def training_def(game, mix_str_att, epoch, retrain = False, transfer=False):
                 checkpoint_freq=param['checkpoint_freq'],
                 scope = scope,
                 load_path=load_path,
-                epoch=-1
+                epoch=epoch
             )
             print("Saving defender's model to pickle.")
             if retrain:

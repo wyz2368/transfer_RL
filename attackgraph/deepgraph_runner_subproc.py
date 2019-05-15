@@ -3,6 +3,7 @@ import numpy as np
 import os
 import datetime
 import sys
+sys.path.append('/home/wangyzh/Transfer')
 import psutil
 import warnings
 
@@ -42,7 +43,7 @@ def initialize(load_env=None, env_name=None):
 
     # Create Environment
     if isinstance(load_env,str):
-        path = os.getcwd() + load_env + '.pkl'
+        path = os.getcwd() + '/env_data/' + load_env + '.pkl'
         if not fp.isExist(path):
             raise ValueError("The env being loaded does not exist.")
         env = fp.load_pkl(path)
@@ -203,7 +204,7 @@ def EGTA_restart(restart_epoch, start_hado = 2, retrain=False, transfer=False, g
 if __name__ == '__main__':
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     warnings.filterwarnings("ignore")
-    game = initialize(env_name='test_env')
+    game = initialize(load_env='run_env_B', env_name=None)
     # EGTA(env, game, retrain=True)
     EGTA(retrain=False, transfer=True)
     # EGTA_restart(restart_epoch=4)

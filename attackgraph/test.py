@@ -156,9 +156,9 @@ identity = 0
 # print(c)
 # print(a+c)
 
-path = os.getcwd() + '/defender_strategies/def_str_epoch3.pkl'
-a = fp.load_pkl(path)
-
+a = np.zeros(5)
+a[0] = 1
+print(a)
 
 
 

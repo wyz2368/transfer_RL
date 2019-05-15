@@ -32,7 +32,7 @@ def initialize(load_env=None, env_name=None):
 
     # Create Environment
     if isinstance(load_env,str):
-        path = os.getcwd() + load_env + '.pkl'
+        path = os.getcwd() + '/env_data/' + load_env + '.pkl'
         if not fp.isExist(path):
             raise ValueError("The env being loaded does not exist.")
         env = fp.load_pkl(path)
@@ -116,8 +116,15 @@ def EGTA(env, game, start_hado=2, retrain=False, transfer=False, epoch=1, game_p
     # while True:
         mem0 = proc.memory_info().rss
         # fix opponent strategy
-        mix_str_def = game.nasheq[epoch][0]
-        mix_str_att = game.nasheq[epoch][1]
+        # mix_str_def = game.nasheq[epoch][0]
+        # mix_str_att = game.nasheq[epoch][1]
+
+        #TODO: play against uniform
+        mix_str_def = np.zeros(len(game.nasheq[epoch][0]))
+        mix_str_def[0] = 1
+        mix_str_att = np.zeros(len(game.nasheq[epoch][1]))
+        mix_str_att[0] = 1
+
         aPayoff, dPayoff = util.payoff_mixed_NE(game, epoch)
 
         game.att_payoff.append(aPayoff)
@@ -216,6 +223,12 @@ def EGTA(env, game, start_hado=2, retrain=False, transfer=False, epoch=1, game_p
         game.env.attacker.nn_att = None
         game.env.defender.nn_def = None
         fp.save_pkl(game, game_path)
+
+        print('a_BD_list', game.att_BD_list)
+        print('aPayoff', game.att_payoff)
+        print('d_BD_list', game.def_BD_list)
+        print('dPayoff', game.def_payoff)
+
         print("Round_" + str(epoch) + " has done and game was saved.")
         print("=======================================================")
         # break

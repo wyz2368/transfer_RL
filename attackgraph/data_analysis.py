@@ -3,6 +3,7 @@ matplotlib.use("TkAgg")
 
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 from attackgraph import file_op as fp
 from attackgraph import json_op as jp
@@ -26,3 +27,22 @@ def expected_payoff(a_BD, att_payoff, d_BD, def_payoff):
     plt.show()
 
 
+def learning_curve(data):
+    path = os.getcwd() + '/learning_curve/' + data + '.pkl'
+    curve = fp.load_pkl(path)
+    plt.plot(curve, color=np.random.rand(3,))
+    plt.xlabel("Time Steps")
+    plt.ylabel("Average Reward over 250 episodes")
+    plt.title("Transfer Learning Curvce")
+    plt.show()
+
+
+def learning_curve_many(data):
+    for name in data:
+        path = os.getcwd() + '/learning_curve/' + name + '.pkl'
+        curve = fp.load_pkl(path)
+        plt.plot(curve, color=np.random.rand(3,))
+    plt.xlabel("Time Steps")
+    plt.ylabel("Average Reward over 250 episodes")
+    plt.title("Learning Curvce")
+    plt.show()
