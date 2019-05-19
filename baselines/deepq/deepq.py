@@ -22,9 +22,45 @@ from baselines.deepq.models import build_q_func
 from baselines.deepq.utils import mask_generator_att
 
 from attackgraph import file_op as fp
+from attackgraph import json_op as jp
+from baselines.common import models
 
+DIR = os.getcwd() + '/'
 
+def load_all_policies(env, str_set, opp_identity):
+    param_path = os.getcwd() + '/network_parameters/param.json'
+    param = jp.load_json_data(param_path)
 
+    if opp_identity == 0: # pick a defender's strategy
+        path = DIR + 'defender_strategies/'
+        scope = 'def_str_epoch' + str(0) + '.pkl' + '/'
+    elif opp_identity == 1:
+        path = DIR + 'attacker_strategies/'
+        scope = 'att_str_epoch' + str(1) + '.pkl' + '/'
+    else:
+        raise ValueError("identity is neither 0 or 1!")
+
+    str_dict = {}
+
+    flag = env.training_flag
+    env.set_training_flag(opp_identity)
+
+    count = 1
+    for picked_str in str_set:
+        if count == 1 and 'epoch1.pkl' in picked_str:
+            str_dict[picked_str] = fp.load_pkl(path + picked_str)
+            count += 1
+            continue
+        str_dict[picked_str] = learn(
+                        env,
+                        network=models.mlp(num_hidden=param['num_hidden'], num_layers=param['num_layers']),
+                        total_timesteps=0,
+                        load_path= path + picked_str,
+                        scope = scope
+                    )
+
+    env.set_training_flag(flag)
+    return str_dict
 
 class ActWrapper(object):
     def __init__(self, act, act_params):
@@ -921,15 +957,21 @@ class Learner(object):
 
                 if total_timesteps != 0:
                     if training_flag == 0:  # defender is training
-                        env.attacker.sample_and_set_str()
-                        # print("Model loaded successfully.")
-                        if len(np.where(env.attacker.mix_str>0.95)[0]) == 1:
+                        if len(np.where(env.attacker.mix_str>0.95)[0]) == 1: # if pure strategy
+                            env.attacker.sample_and_set_str()
                             one_hot_att = True
+                        else: # if mixed strategy
+                            print("Enter att mix")
+                            str_dict = load_all_policies(env, env.attacker.str_set, opp_identity=1)
+                            env.attacker.sample_and_set_str(str_dict=str_dict)
                     elif training_flag == 1:  # attacker is training
-                        env.defender.sample_and_set_str()
-                        # print("Model loaded successfully.")
-                        if len(np.where(env.defender.mix_str>0.95)[0]) == 1:
+                        if len(np.where(env.defender.mix_str>0.95)[0]) == 1: # if pure strategy
+                            env.defender.sample_and_set_str()
                             one_hot_def = True
+                        else: # if mixed strategy
+                            print("Enter def mix")
+                            str_dict = load_all_policies(env, env.defender.str_set, opp_identity=0)
+                            env.defender.sample_and_set_str(str_dict=str_dict)
                     else:
                         raise ValueError("Training flag is wrong")
 
@@ -999,9 +1041,9 @@ class Learner(object):
                             if not one_hot_att and not one_hot_def:
                                 if total_timesteps != 0:
                                     if training_flag == 0:  # defender is training
-                                        env.attacker.sample_and_set_str()
+                                        env.attacker.sample_and_set_str(str_dict)
                                     elif training_flag == 1:  # attacker is training
-                                        env.defender.sample_and_set_str()
+                                        env.defender.sample_and_set_str(str_dict)
                                     else:
                                         raise ValueError("Training flag is wrong")
 

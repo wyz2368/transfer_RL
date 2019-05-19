@@ -13,7 +13,7 @@ DIR_att = os.getcwd() + '/attacker_strategies/'
 
 
 #TODO: str in str_set should include .pkl
-def sample_strategy_from_mixed(env, str_set, mix_str, identity):
+def sample_strategy_from_mixed(env, str_set, mix_str, identity, str_dict=None):
 
     if not isinstance(mix_str,np.ndarray):
         raise ValueError("mix_str in sample func is not a numpy array.")
@@ -22,6 +22,10 @@ def sample_strategy_from_mixed(env, str_set, mix_str, identity):
         raise ValueError("Length of mixed strategies does not match number of strategies.")
 
     picked_str = np.random.choice(str_set, p=mix_str)
+
+    if str_dict != None:
+        return str_dict[picked_str]
+
     if not fp.isInName('.pkl', name = picked_str):
         raise ValueError('The strategy picked is not a pickle file.')
 

@@ -33,7 +33,7 @@ def learning_curve(data):
     plt.plot(curve, color=np.random.rand(3,))
     plt.xlabel("Time Steps")
     plt.ylabel("Average Reward over 250 episodes")
-    plt.title("Transfer Learning Curvce")
+    plt.title("Transfer Learning Curve")
     plt.show()
 
 
@@ -44,5 +44,5 @@ def learning_curve_many(data):
         plt.plot(curve, color=np.random.rand(3,))
     plt.xlabel("Time Steps")
     plt.ylabel("Average Reward over 250 episodes")
-    plt.title("Learning Curvce")
+    plt.title("Learning Curve")
     plt.show()

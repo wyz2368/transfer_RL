@@ -28,9 +28,15 @@ def nn_param():
     # transfer learning
     param['trans_timesteps_att'] = 700000
     param['trans_timesteps_def'] = 1000000
-    param['trans_lr'] = 5e-5
-    param['trans_exploration_fraction'] = 0.5
+    param['trans_lr'] = 8e-5
+    param['trans_exploration_fraction'] = 0.3
     param['trans_exploration_final_eps'] = 0.03
+
+    #TODO: defender and attacker should have different param.
+    param['trans_exploration_fraction_att'] = 0.5
+    param['trans_exploration_final_eps_att'] = 0.03
+    param['trans_exploration_fraction_def'] = 0.5
+    param['trans_exploration_final_eps_def'] = 0.03
 
     param_path = os.getcwd() + '/network_parameters/param.json'
     jp.save_json_data(param_path, param)
@@ -69,6 +75,11 @@ def nn_param1():
     param['trans_lr'] = 5e-5
     param['trans_exploration_fraction'] = 0.5
     param['trans_exploration_final_eps'] = 0.03
+
+    param['trans_exploration_fraction_att'] = 0.5
+    param['trans_exploration_final_eps_att'] = 0.03
+    param['trans_exploration_fraction_def'] = 0.5
+    param['trans_exploration_final_eps_def'] = 0.03
 
     param_path = os.getcwd() + '/network_parameters/param.json'
     jp.save_json_data(param_path, param)
