@@ -34,7 +34,7 @@ def training_att(game, mix_str_def, epoch, retrain = False, transfer=False):
     else:
         load_path = None
 
-    if transfer:
+    if transfer or epoch>2:
         lr = param['trans_lr']
         total_timesteps = param['trans_timesteps_att']
         ex_frac = param['trans_exploration_fraction']

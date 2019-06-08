@@ -55,7 +55,7 @@ def decode_gambit_file():
         new_nash.append(convert(nash[i]))
 
     new_nash = np.array(new_nash)
-    new_nash = np.round(new_nash,decimals=2)
+    new_nash = np.round(new_nash,decimals=4)
     nash_def = new_nash[:int(len(new_nash)/2)]
     nash_att = new_nash[int(len(new_nash)/2):]
 

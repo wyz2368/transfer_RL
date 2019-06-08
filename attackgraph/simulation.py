@@ -159,6 +159,15 @@ def series_sim(env, game, nn_att, nn_def, num_episodes):
                     aReward += G.nodes[node]['aReward']
                     dReward += G.nodes[node]['dPenalty']
 
+            # update players' observations
+            # update defender's observation
+            defender.update_obs(defender.get_def_hadAlert(G))
+            defender.save_defact2prev()
+            defender.defact.clear()
+            # update attacker's observation
+            attacker.update_obs(attacker.get_att_isActive(G))
+            attacker.attact.clear()
+
         aReward_list = np.append(aReward_list,aReward)
         dReward_list = np.append(dReward_list,dReward)
 

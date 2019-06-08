@@ -492,9 +492,9 @@ class Environment(object):
         dReward = 0
         # Strategy should be assigned to players for every episode.
         if self.training_flag == 0: # If the defender is training, attacker builds greedy set. Vice Versa.
-            self.attacker.att_greedy_action_builder(self.G, self.T - self.current_time)
+            self.attacker.att_greedy_action_builder(self.G, self.T - self.current_time + 1)
         elif self.training_flag == 1:
-            self.defender.def_greedy_action_builder(self.G, self.T - self.current_time)
+            self.defender.def_greedy_action_builder(self.G, self.T - self.current_time + 1)
         else:
             raise ValueError("training flag error.")
 

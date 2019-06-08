@@ -164,6 +164,15 @@ class Attacker(object):
         canAttack.append(0) # mask pass with 0.
         return canAttack
 
+    def get_att_isActive(self, G):
+        isActive = []
+        for id in G.nodes:
+            if G.nodes[id]['state'] == 1:
+                isActive.append(1)
+            else:
+                isActive.append(0)
+        return isActive
+
     def set_current_strategy(self,strategy):
         self.nn_att = strategy
 

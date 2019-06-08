@@ -79,6 +79,23 @@ class Defender(object):
                 indef.append(0)
         return indef
 
+    def get_def_hadAlert(self, G):
+        alert = []
+        for node in G.nodes:
+            if G.nodes[node]['state'] == 1:
+                if random.uniform(0, 1) <= G.nodes[node]['posActiveProb']:
+                    alert.append(1)
+                else:
+                    alert.append(0)
+            elif G.nodes[node]['state'] == 0:
+                if random.uniform(0, 1) <= G.nodes[node]['posInactiveProb']:
+                    alert.append(1)
+                else:
+                    alert.append(0)
+            else:
+                raise ValueError("node state is abnormal.")
+        return alert
+
     def get_def_actionspace(self, G):
         actionspace = list(G.nodes) + ['pass']
         return actionspace
